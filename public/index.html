@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bioauth Demo App</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,sans-serif;margin:2rem;max-width:720px}
+    .card{border:1px solid #ddd;border-radius:12px;padding:1rem;margin-bottom:1rem;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+    button{padding:.6rem 1rem;border-radius:10px;border:1px solid #ccc;background:#fff;cursor:pointer}
+    input{padding:.6rem;border-radius:8px;border:1px solid #ccc;width:100%}
+    .row{display:flex;gap:.5rem;flex-wrap:wrap}
+    .hidden{display:none}
+    .success{color:green}
+    .error{color:#b00020}
+    .muted{color:#666}
+    .badge{display:inline-block;padding:.2rem .5rem;border-radius:999px;background:#eee;margin-left:.5rem;font-size:.8rem}
+  </style>
+</head>
+<body>
+  <h1>Biometrically Secured – Demo Login</h1>
+  <div class="card">
+    <h2>Step 1: Credentials</h2>
+    <p class="muted">Use <code>demo@bioauth.test</code> / <code>Password123!</code></p>
+    <div class="row">
+      <input id="email" placeholder="Email address" />
+      <input id="password" placeholder="Password" type="password" />
+      <button id="continueBtn">Continue</button>
+    </div>
+    <p id="credStatus" class="error hidden"></p>
+  </div>
+
+  <div id="webauthnCard" class="card hidden">
+    <h2>Step 2: WebAuthn Biometric Authentication <span id="lockout" class="badge hidden">LOCKED</span></h2>
+    <div class="row">
+      <button id="registerBtn">Register Biometric</button>
+      <button id="authenticateBtn">Authenticate</button>
+    </div>
+    <div class="row">
+      <button id="hasAuthenticatorBtn">Check if Registered</button>
+    </div>
+    <p id="webauthnStatus" class="muted">Ready for WebAuthn registration or authentication</p>
+  </div>
+
+  <div id="dashboard" class="card hidden">
+    <h2>Admin Dashboard</h2>
+    <p class="success">You are logged in! 🎉</p>
+  </div>
+
+  <script src="./webauthn-browser.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

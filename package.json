@@ -1,0 +1,24 @@
+{
+  "name": "ai-bioauth-testathon",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI-Powered Testathon: Bioauthentication login automation (Cypress + Mock Server + Applitools hooks)",
+  "scripts": {
+    "dev:server": "node mock-server/server.js",
+    "dev:app": "node mock-server/server.js",
+    "test:open": "cypress open",
+    "test:run": "cypress run",
+    "postinstall": "npx eyes-setup || echo 'Applitools optional'"
+  },
+  "dependencies": {
+    "@simplewebauthn/browser": "^13.1.2",
+    "@simplewebauthn/server": "^13.1.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@applitools/eyes-cypress": "^3.38.4",
+    "cypress": "^13.12.0"
+  }
+}

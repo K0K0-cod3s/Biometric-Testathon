@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "Bash(npm run dev:server:*)",
+      "Bash(PORT=3001 npm run dev:server)",
+      "Bash(PORT=4000 npm run dev:server)",
+      "WebFetch(domain:webauthn.io)",
+      "Bash(npm install:*)",
+      "Bash(PORT=4001 npm run dev:server)",
+      "Bash(PORT=4002 npm run dev:server)",
+      "Bash(PORT=4003 npm run dev:server)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
