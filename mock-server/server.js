@@ -48,7 +48,9 @@ app.post('/api/auth/login', (req, res) => {
     return res.status(400).json({ error: 'Email and password must be strings' });
   }
   
-  if (email === 'demo@bioauth.test' && password === 'Password123!') {
+  // Accept any email/password combination and create user automatically
+  // In production, you would validate against a real user database
+  if (email && password && email.includes('@') && password.length >= 6) {
     // Check if user exists, if not create them
     if (!users.has(email)) {
       const userId = uuidv4();
@@ -61,7 +63,7 @@ app.post('/api/auth/login', (req, res) => {
     }
     return res.json({ next: 'webauthn', user: users.get(email) });
   }
-  return res.status(401).json({ error: 'Invalid credentials' });
+  return res.status(401).json({ error: 'Invalid credentials - email must contain @ and password must be at least 6 characters' });
 });
 
 // WebAuthn Registration - Begin
