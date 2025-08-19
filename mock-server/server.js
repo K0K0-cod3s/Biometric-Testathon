@@ -186,13 +186,17 @@ app.post('/api/webauthn/authenticate/begin', async (req, res) => {
     return res.status(404).json({ error: 'User not found' });
   }
   
+  // Add debugging info
+  console.log('User authenticators:', user.authenticators.length);
+  console.log('First authenticator:', user.authenticators[0]);
+  
   try {
     const options = await generateAuthenticationOptions({
       rpID: RP_ID,
       allowCredentials: user.authenticators.map(authenticator => ({
         id: authenticator.credentialID,
         type: 'public-key',
-        transports: authenticator.transports,
+        transports: authenticator.transports || ['internal'],
       })),
       userVerification: 'preferred',
     });
@@ -203,7 +207,9 @@ app.post('/api/webauthn/authenticate/begin', async (req, res) => {
     res.json(options);
   } catch (error) {
     console.error('Authentication begin error:', error);
-    res.status(500).json({ error: 'Failed to generate authentication options' });
+    console.error('Error stack:', error.stack);
+    console.error('User authenticators:', JSON.stringify(user.authenticators, null, 2));
+    res.status(500).json({ error: 'Failed to generate authentication options: ' + error.message });
   }
 });
 
