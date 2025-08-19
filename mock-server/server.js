@@ -21,7 +21,14 @@ let failCounts = {}; // track failed bio attempts by email
 // WebAuthn configuration
 const RP_ID = process.env.NODE_ENV === 'production' ? 'yourdomain.com' : 'localhost';
 const RP_NAME = 'Bioauth Demo App';
-const ORIGIN = process.env.NODE_ENV === 'production' ? 'https://yourdomain.com' : `http://localhost:${process.env.PORT || 3000}`;
+// Dynamic origin detection based on the actual request
+const getOrigin = (req) => {
+  if (process.env.NODE_ENV === 'production') {
+    return 'https://yourdomain.com';
+  }
+  // Use the origin from the request headers, or fallback to localhost with current port
+  return req.get('origin') || `http://localhost:${process.env.PORT || 3000}`;
+};
 
 // Clean up old fail count entries every 30 minutes
 setInterval(() => {
@@ -124,10 +131,18 @@ app.post('/api/webauthn/register/complete', async (req, res) => {
   }
   
   try {
+    console.log('Registration verification attempt:', {
+      email,
+      expectedChallenge: user.currentChallenge,
+      expectedOrigin: ORIGIN,
+      expectedRPID: RP_ID,
+      responseId: response.id
+    });
+    
     const verification = await verifyRegistrationResponse({
       response,
       expectedChallenge: user.currentChallenge,
-      expectedOrigin: ORIGIN,
+      expectedOrigin: getOrigin(req),
       expectedRPID: RP_ID,
     });
     
@@ -171,7 +186,12 @@ app.post('/api/webauthn/register/complete', async (req, res) => {
     }
   } catch (error) {
     console.error('Registration complete error:', error);
-    res.status(500).json({ error: 'Registration verification failed' });
+    console.error('Error details:', {
+      name: error.name,
+      message: error.message,
+      stack: error.stack
+    });
+    res.status(500).json({ error: 'Registration verification failed: ' + error.message });
   }
 });
 
@@ -250,7 +270,7 @@ app.post('/api/webauthn/authenticate/complete', async (req, res) => {
     const verification = await verifyAuthenticationResponse({
       response,
       expectedChallenge: user.currentChallenge,
-      expectedOrigin: ORIGIN,
+      expectedOrigin: getOrigin(req),
       expectedRPID: RP_ID,
       authenticator: {
         credentialID: authenticator.credentialID,
